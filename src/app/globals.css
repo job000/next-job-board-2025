@@ -209,3 +209,7 @@
 .font-semibold {
   font-weight: 600 !important;
 }
+
+.select button{
+  width: 100% !important;
+}
