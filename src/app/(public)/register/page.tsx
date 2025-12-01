@@ -27,6 +27,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { MoveLeft } from 'lucide-react';
+import { registerUser } from '@/actions/users';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 
 
@@ -34,13 +37,15 @@ const formSchema = z.object({
   name: z.string().min(2,{message:"Username must be at least 2 characters."}),
   email: z.email({message:"Invalid email address."}),
   password: z.string().min(6,{message:"Password must be at least 6 characters."}),
-  role: z.string().optional(),
+  role: z.enum(['recruiter', 'job-seeker']).optional(),
 })
 
 
 function RegisterPage() {
-
-
+  const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
+  
+  // 1. Initialize the form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,10 +57,17 @@ function RegisterPage() {
   })
  
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
+    const response = await registerUser(values);
+    if(response.success){
+      toast.success(response.message);
+      form.reset();
+      router.push('/login');
+    }else{
+      toast.error(response.message);
+    }
+    setLoading(false);
   }
 
   return (
@@ -147,7 +159,10 @@ function RegisterPage() {
                    
                   
 
-                  <Button type="submit" className='w-full'>Register</Button>
+                  <Button type="submit" className='w-full' disabled={loading}>
+                    {loading ? 'Registering...' : 'Register'}
+                  </Button>
+                  
                   <div className='flex justify-center gap-1'>
                     <h1 className='text-sm'>
                       Already have an account?{' '}

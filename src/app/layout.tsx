@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import {Montserrat} from "next/font/google";
-
+import { Montserrat } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
   display: "swap",
-  weight: ["400", "500","600","700"],
+  weight: ["400", "500", "600", "700"],
 });
 
 
@@ -23,9 +23,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      
+
       <body
         className={`antialiased ${montserrat.className}`}>{children}
+        <Toaster />
       </body>
     </html>
   );

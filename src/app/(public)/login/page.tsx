@@ -7,7 +7,7 @@ import { userRoles } from '@/constants';
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { set, z } from "zod"
 import {
   Form,
   FormControl,
@@ -27,19 +27,26 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { MoveLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import { loginUser } from '@/actions/users';
+import cookie from 'js-cookie';
 
 
 
 const formSchema = z.object({
   email: z.email({message:"Invalid email address."}),
   password: z.string().min(6,{message:"Password must be at least 6 characters."}),
-  role: z.string().optional(),
+  role: z.enum(['recruiter', 'job-seeker']).optional(),
 })
 
 
 function LoginPage() {
 
+  const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
 
+  // 1. Initialize the form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,10 +57,27 @@ function LoginPage() {
   })
  
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      setLoading(true);
+      const response: any = await loginUser(values);
+      if(response.success){
+        toast.success(response.message);
+        form.reset();
+        router.push('/');
+        const token = response.data;
+        if(token){
+          cookie.set('token', token);
+          cookie.set('role', values.role || '');
+        }
+        setLoading(false);
+      }else{
+        toast.error(response.message || 'Login failed.');
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+    }
   }
 
   return (
@@ -133,7 +157,10 @@ function LoginPage() {
                    
                   
 
-                  <Button type="submit" className='w-full'>Login</Button>
+                  <Button type="submit" className='w-full'>
+                    {loading ? 'Logging in...' : 'Login'}
+                    </Button>
+
                   <div className='flex justify-center gap-1'>
                     <p className='text-sm text-gray-600'>Don't have an account?</p>
                     <Link href={'/register'} className='text-sm text-primary font-medium'>Register</Link>
