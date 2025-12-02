@@ -1,6 +1,6 @@
 # 05 - Autentisering
 
-Denne guiden viser hvordan du implementerer brukerregistrering og innlogging med bcrypt og JWT.
+Implementere brukerregistrering og innlogging med bcrypt og JWT.
 
 ---
 

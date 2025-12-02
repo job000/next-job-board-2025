@@ -161,67 +161,35 @@ Se [06-FORM-VALIDATION.md](./06-FORM-VALIDATION.md) for komplett implementasjon.
 
 ## Private sider
 
-### Job Seeker Dashboard
+Private sider bruker Zustand global state for brukerdata. Se [12-STATE-MANAGEMENT.md](./12-STATE-MANAGEMENT.md) for detaljer.
 
-**Fil:** `src/app/(private)/job-seeker/dashboard/page.tsx`
+### Komplett mappestruktur for private sider
 
-```typescript
-'use client'
-
-import React, { useEffect, useState } from 'react';
-import { getLoggedInUser } from '@/actions/users';
-import { IUser } from '@/interfaces';
-
-function JobSeekerDashboard() {
-  const [user, setUser] = useState<IUser | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const response = await getLoggedInUser();
-      if (response.success) {
-        setUser(response.data);
-      }
-      setLoading(false);
-    };
-    fetchUser();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Job Seeker Dashboard</h1>
-
-      {user && (
-        <div className="bg-white p-4 rounded shadow">
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Role:</strong> {user.role}</p>
-        </div>
-      )}
-
-      <div className="grid grid-cols-3 gap-4 mt-6">
-        <div className="bg-white p-4 rounded shadow">
-          <h3 className="font-semibold">Applications</h3>
-          <p className="text-2xl">0</p>
-        </div>
-        <div className="bg-white p-4 rounded shadow">
-          <h3 className="font-semibold">Saved Jobs</h3>
-          <p className="text-2xl">0</p>
-        </div>
-        <div className="bg-white p-4 rounded shadow">
-          <h3 className="font-semibold">Profile Views</h3>
-          <p className="text-2xl">0</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default JobSeekerDashboard;
+```
+src/app/(private)/
+├── job-seeker/
+│   ├── dashboard/
+│   │   └── page.tsx
+│   ├── jobs/
+│   │   └── page.tsx
+│   ├── applications/
+│   │   └── page.tsx
+│   └── profile/
+│       └── page.tsx
+│
+└── recruiter/
+    ├── dashboard/
+    │   └── page.tsx
+    ├── jobs/
+    │   ├── page.tsx
+    │   ├── new/
+    │   │   └── page.tsx
+    │   └── [id]/
+    │       └── page.tsx
+    ├── applications/
+    │   └── page.tsx
+    └── profile/
+        └── page.tsx
 ```
 
 ### Recruiter Dashboard
@@ -229,69 +197,129 @@ export default JobSeekerDashboard;
 **Fil:** `src/app/(private)/recruiter/dashboard/page.tsx`
 
 ```typescript
-'use client'
-
-import React, { useEffect, useState } from 'react';
-import { getLoggedInUser } from '@/actions/users';
-import { IUser } from '@/interfaces';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import React from 'react'
 
 function RecruiterDashboard() {
-  const [user, setUser] = useState<IUser | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const response = await getLoggedInUser();
-      if (response.success) {
-        setUser(response.data);
-      }
-      setLoading(false);
-    };
-    fetchUser();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Recruiter Dashboard</h1>
-        <Link href="/recruiter/jobs/new">
-          <Button>Post New Job</Button>
-        </Link>
-      </div>
-
-      {user && (
-        <div className="bg-white p-4 rounded shadow mb-6">
-          <p><strong>Welcome,</strong> {user.name}</p>
-          <p className="text-gray-500">{user.email}</p>
-        </div>
-      )}
-
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded shadow">
-          <h3 className="font-semibold">Active Jobs</h3>
-          <p className="text-2xl">0</p>
-        </div>
-        <div className="bg-white p-4 rounded shadow">
-          <h3 className="font-semibold">Total Applications</h3>
-          <p className="text-2xl">0</p>
-        </div>
-        <div className="bg-white p-4 rounded shadow">
-          <h3 className="font-semibold">Pending Reviews</h3>
-          <p className="text-2xl">0</p>
-        </div>
-      </div>
+      This is Recruiter Dashboard
     </div>
-  );
+  )
 }
 
-export default RecruiterDashboard;
+export default RecruiterDashboard
 ```
+
+### Job Seeker Dashboard
+
+**Fil:** `src/app/(private)/job-seeker/dashboard/page.tsx`
+
+```typescript
+import React from 'react'
+
+function JobSeekerDashboard() {
+  return (
+    <div>
+      This is Job Seeker Dashboard
+    </div>
+  )
+}
+
+export default JobSeekerDashboard
+```
+
+### Viktig: Server Components som default
+
+Dashboard-sidene er nå **Server Components** (ingen `'use client'`). Brukerdata hentes allerede av PrivateLayout og lagres i Zustand store.
+
+Hvis du trenger brukerdata i en side, legg til `'use client'` og bruk Zustand:
+
+```typescript
+'use client';
+import useUsersStore, { IUsersStore } from '@/store/users-store';
+
+function MyPage() {
+  const { user } = useUsersStore() as IUsersStore;
+
+  return <div>Welcome, {user?.name}</div>;
+}
+```
+
+### Andre private sider
+
+De andre private sidene (Jobs, Applications, Profile) følger samme enkle mønster:
+
+**Recruiter sider:**
+- `/recruiter/jobs` → `src/app/(private)/recruiter/jobs/page.tsx`
+- `/recruiter/applications` → `src/app/(private)/recruiter/applications/page.tsx`
+- `/recruiter/profile` → `src/app/(private)/recruiter/profile/page.tsx`
+
+**Job Seeker sider:**
+- `/job-seeker/jobs` → `src/app/(private)/job-seeker/jobs/page.tsx`
+- `/job-seeker/applications` → `src/app/(private)/job-seeker/applications/page.tsx`
+- `/job-seeker/profile` → `src/app/(private)/job-seeker/profile/page.tsx`
+
+### Eksempel: Enkel side-mal
+
+```typescript
+import React from 'react'
+
+function PageName() {
+  return (
+    <div>
+      Welcome to the Page
+    </div>
+  )
+}
+
+export default PageName
+```
+
+### Legge til ny privat side
+
+1. **Opprett mappe og fil:**
+   ```bash
+   mkdir -p "src/app/(private)/recruiter/new-page"
+   touch "src/app/(private)/recruiter/new-page/page.tsx"
+   ```
+
+2. **Lag enkel side:**
+   ```typescript
+   import React from 'react'
+
+   function NewPage() {
+     return (
+       <div>
+         <h1>New Page</h1>
+       </div>
+     )
+   }
+
+   export default NewPage
+   ```
+
+3. **Legg til brukerdata (valgfritt):**
+   ```typescript
+   'use client';
+   import useUsersStore, { IUsersStore } from '@/store/users-store';
+
+   function NewPage() {
+     const { user } = useUsersStore() as IUsersStore;
+
+     return (
+       <div>
+         <h1>New Page</h1>
+         <p>Velkommen, {user?.name}</p>
+       </div>
+     );
+   }
+
+   export default NewPage;
+   ```
+
+4. **Legg til i sidebar-meny:**
+
+   Se [08-CUSTOM-LAYOUTS.md](./08-CUSTOM-LAYOUTS.md) for hvordan du legger til nye menypunkter i sidebar.
 
 ---
 
@@ -530,23 +558,41 @@ export default async function JobPage({ params }: Props) {
 
 ## Sjekkliste
 
-### Mappestruktur
+### Mappestruktur - Offentlige sider
 - [ ] `src/app/(public)/` opprettet
 - [ ] `src/app/(public)/login/page.tsx` opprettet
 - [ ] `src/app/(public)/register/page.tsx` opprettet
-- [ ] `src/app/(private)/job-seeker/dashboard/page.tsx` opprettet
+
+### Mappestruktur - Recruiter sider
 - [ ] `src/app/(private)/recruiter/dashboard/page.tsx` opprettet
+- [ ] `src/app/(private)/recruiter/jobs/page.tsx` opprettet
+- [ ] `src/app/(private)/recruiter/applications/page.tsx` opprettet
+- [ ] `src/app/(private)/recruiter/profile/page.tsx` opprettet
+
+### Mappestruktur - Job Seeker sider
+- [ ] `src/app/(private)/job-seeker/dashboard/page.tsx` opprettet
+- [ ] `src/app/(private)/job-seeker/jobs/page.tsx` opprettet
+- [ ] `src/app/(private)/job-seeker/applications/page.tsx` opprettet
+- [ ] `src/app/(private)/job-seeker/profile/page.tsx` opprettet
 
 ### Ruting
 - [ ] Hjemmeside (`/`) fungerer
 - [ ] Login (`/login`) fungerer
 - [ ] Register (`/register`) fungerer
-- [ ] Dashboards fungerer
+- [ ] Recruiter Dashboard (`/recruiter/dashboard`) fungerer
+- [ ] Job Seeker Dashboard (`/job-seeker/dashboard`) fungerer
+- [ ] Alle sider tilgjengelige via sidebar-meny
+
+### Zustand-integrasjon
+- [ ] PrivateLayout henter brukerdata og lagrer i store
+- [ ] Sider som trenger brukerdata bruker `'use client'` + `useUsersStore`
+- [ ] Enkle sider kan være Server Components (ingen `'use client'`)
 
 ### Navigasjon
 - [ ] `Link`-komponent brukes for navigasjon
 - [ ] `useRouter` fra `next/navigation`
 - [ ] Redirect etter login fungerer
+- [ ] Sidebar-meny navigerer korrekt
 
 ### Dynamiske ruter
 - [ ] `[id]`-mapper opprettet (hvis relevant)

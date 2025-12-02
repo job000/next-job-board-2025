@@ -1,19 +1,19 @@
-# Next.js Fullstack Prosjekt - Dokumentasjonsindeks
+# Next.js Fullstack Prosjekt - Implementasjonsguide
 
-Komplett guide for a bygge en fullstack Next.js-applikasjon fra scratch.
+Komplett implementasjonsguide for å bygge en fullstack Next.js-applikasjon fra scratch.
 
 ---
 
-## Om denne dokumentasjonen
+## Om denne guiden
 
-Denne dokumentasjonen er laget for a kunne gjenbruke arkitekturen og implementasjonene i nye prosjekter. Hver guide er selvstendig og kan folges uavhengig av de andre.
+Denne guiden er laget for å kunne **gjenbruke arkitekturen og koden** i nye prosjekter. Følg stegene i rekkefølge for å bygge en komplett applikasjon.
 
 **Prosjekttype:** Jobbportal (Job Board)
 **Teknologier:** Next.js 16, React 19, TypeScript, Supabase, Tailwind CSS
 
 ---
 
-## Dokumentasjonsoversikt
+## Implementasjonsoversikt
 
 | # | Fil | Innhold | Tid |
 |---|-----|---------|-----|
@@ -24,12 +24,13 @@ Denne dokumentasjonen er laget for a kunne gjenbruke arkitekturen og implementas
 | 05 | [AUTHENTICATION.md](./05-AUTHENTICATION.md) | Brukerautentisering (register/login) | 30 min |
 | 06 | [FORM-VALIDATION.md](./06-FORM-VALIDATION.md) | Skjemaer med React Hook Form + Zod | 20 min |
 | 07 | [PROXY-MIDDLEWARE.md](./07-PROXY-MIDDLEWARE.md) | Rutebeskyttelse med proxy.ts | 15 min |
-| 08 | [CUSTOM-LAYOUTS.md](./08-CUSTOM-LAYOUTS.md) | Dynamiske layouts | 15 min |
+| 08 | [CUSTOM-LAYOUTS.md](./08-CUSTOM-LAYOUTS.md) | Dynamiske layouts med brukerdata | 15 min |
 | 09 | [PAGES-ROUTING.md](./09-PAGES-ROUTING.md) | Sider og ruting | 20 min |
 | 10 | [COMPONENTS.md](./10-COMPONENTS.md) | Gjenbrukbare komponenter | 15 min |
 | 11 | [DEPLOYMENT.md](./11-DEPLOYMENT.md) | Produksjonssetting | 15 min |
+| 12 | [STATE-MANAGEMENT.md](./12-STATE-MANAGEMENT.md) | Global state med Zustand | 20 min |
 
-**Total estimert tid:** ~3 timer
+**Total estimert tid:** ~3.5 timer
 
 ---
 
@@ -98,6 +99,7 @@ prosjekt/
 │   ├── components/
 │   │   ├── ui/                   # Shadcn/ui komponenter
 │   │   └── functional/           # Funksjonelle komponenter
+│   │       └── logout-btn.tsx
 │   │
 │   ├── config/                   # Konfigurasjon
 │   │   └── supabase-config.ts
@@ -106,15 +108,19 @@ prosjekt/
 │   │   └── index.ts
 │   │
 │   ├── custom-layout/            # Layout-system
-│   │   ├── index.tsx
-│   │   ├── private.tsx
-│   │   └── header.tsx
+│   │   ├── index.tsx             # CustomLayout wrapper
+│   │   ├── private.tsx           # PrivateLayout med brukerdata
+│   │   ├── header.tsx            # Header med brukerinfo
+│   │   └── sidebar-menuitems.tsx # Rollebasert sidebar-navigasjon
 │   │
 │   ├── interfaces/               # TypeScript-typer
 │   │   └── index.ts
 │   │
 │   ├── lib/                      # Hjelpefunksjoner
 │   │   └── utils.ts
+│   │
+│   ├── store/                    # Zustand state management
+│   │   └── users-store.ts        # Bruker-store
 │   │
 │   ├── types/                    # Type-definisjoner
 │   │   └── css.d.ts
@@ -154,6 +160,11 @@ prosjekt/
 | React Hook Form | 7.67.0 | Skjemahandtering |
 | Zod | 4.1.13 | Validering |
 | @hookform/resolvers | 5.2.2 | Kobling |
+
+### State Management
+| Teknologi | Versjon | Formal |
+|-----------|---------|--------|
+| Zustand | 5.x | Global state management |
 
 ### Andre
 | Teknologi | Versjon | Formal |
@@ -213,6 +224,11 @@ prosjekt/
 - [ ] Input-validering
 - [ ] Feilhandtering
 
+### State Management
+- [ ] Zustand installert
+- [ ] User store opprettet
+- [ ] Global brukerdata tilgjengelig
+
 ---
 
 ## Tilpasning for ulike prosjekter
@@ -243,6 +259,7 @@ prosjekt/
 - [Shadcn/ui](https://ui.shadcn.com)
 - [React Hook Form](https://react-hook-form.com)
 - [Zod](https://zod.dev)
+- [Zustand](https://zustand-demo.pmnd.rs/)
 
 ---
 

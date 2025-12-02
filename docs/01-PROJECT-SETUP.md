@@ -1,6 +1,6 @@
 # 01 - Prosjektoppsett
 
-Denne guiden viser hvordan du oppretter et nytt Next.js-prosjekt fra scratch.
+Opprette nytt Next.js-prosjekt med TypeScript og Tailwind CSS.
 
 ---
 
@@ -18,7 +18,7 @@ Denne guiden viser hvordan du oppretter et nytt Next.js-prosjekt fra scratch.
 
 ## Forutsetninger
 
-### Nodvendig programvare
+### Nødvendig programvare
 
 | Program | Minimum versjon | Sjekk kommando |
 |---------|-----------------|----------------|
@@ -46,13 +46,13 @@ sudo apt-get install -y nodejs
 
 ## Opprett prosjekt
 
-### Steg 1: Kjor create-next-app
+### Steg 1: Kjør create-next-app
 
 ```bash
 npx create-next-app@latest mitt-prosjekt
 ```
 
-### Steg 2: Svar pa sporsmal
+### Steg 2: Svar på spørsmål
 
 ```
 ✔ Would you like to use TypeScript? … Yes

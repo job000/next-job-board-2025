@@ -1,6 +1,6 @@
 # 06 - Skjemavalidering
 
-Denne guiden viser hvordan du implementerer skjemaer med React Hook Form og Zod-validering.
+Implementere skjemaer med React Hook Form og Zod-validering.
 
 ---
 

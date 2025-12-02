@@ -22,15 +22,17 @@ Denne guiden viser hvordan du organiserer og bruker gjenbrukbare komponenter.
 
 ```
 src/components/
-├── ui/                     # Shadcn/ui komponenter
+├── ui/                     # Shadcn/ui komponenter + custom UI
 │   ├── button.tsx
 │   ├── input.tsx
 │   ├── label.tsx
 │   ├── select.tsx
-│   └── form.tsx
+│   ├── form.tsx
+│   ├── sheet.tsx           # For sidebar
+│   └── spinner.tsx         # Custom loading spinner
 │
 └── functional/             # Appspesifikke komponenter
-    ├── logout-button.tsx
+    ├── logout-btn.tsx
     ├── user-avatar.tsx
     ├── job-card.tsx
     └── search-bar.tsx
@@ -40,12 +42,86 @@ src/components/
 
 | Type | Formål | Eksempler |
 |------|--------|-----------|
-| **UI** | Generiske, stiliserte elementer | Button, Input, Card |
+| **UI** | Generiske, stiliserte elementer | Button, Input, Card, Spinner |
 | **Functional** | Appspesifikk logikk | LogoutButton, JobCard |
 
 ---
 
 ## UI-komponenter (Shadcn)
+
+### Spinner (Custom loading-komponent)
+
+En gjenbrukbar spinner-komponent for å vise loading-tilstand.
+
+**Fil:** `src/components/ui/spinner.tsx`
+
+```tsx
+import React from "react";
+
+interface SpinnerProps {
+  parentHeight?: string;
+}
+
+function Spinner({ parentHeight = "100vh" }: SpinnerProps) {
+  return (
+    <div
+      style={{ height: parentHeight }}
+      className="flex items-center justify-center"
+    >
+      <div className="w-10 h-10 border-primary border-8 rounded-full border-t-gray-200 animate-spin"></div>
+    </div>
+  );
+}
+
+export default Spinner;
+```
+
+### Spinner Props
+
+| Prop | Type | Default | Beskrivelse |
+|------|------|---------|-------------|
+| `parentHeight` | string | `"100vh"` | Høyde på container (CSS-verdi) |
+
+### Spinner - Bruk
+
+```tsx
+import Spinner from '@/components/ui/spinner';
+
+// Fullskjerm loading
+<Spinner />
+
+// Loading i en spesifikk container
+<Spinner parentHeight="300px" />
+
+// Loading i en kort seksjon
+<Spinner parentHeight="200px" />
+```
+
+### Spinner - Brukes i PrivateLayout
+
+```tsx
+// src/custom-layout/private.tsx
+import Spinner from "@/components/ui/spinner";
+
+function PrivateLayout({ children }: { children: React.ReactNode }) {
+  const [loading, setLoading] = React.useState<boolean>(true);
+
+  // ... fetch user logic
+
+  if (loading) {
+    return <Spinner />;
+  }
+
+  return (
+    <div>
+      <Header />
+      <div className="p-5">{children}</div>
+    </div>
+  );
+}
+```
+
+---
 
 ### Installere komponenter
 
@@ -129,9 +205,77 @@ import {
 
 ## Funksjonelle komponenter
 
-### LogoutButton
+### LogoutButton (Faktisk implementasjon)
 
-**Fil:** `src/components/functional/logout-button.tsx`
+**Fil:** `src/components/functional/logout-btn.tsx`
+
+```tsx
+'use client';
+import React from 'react'
+import { Button } from '../ui/button';
+import { LogOut } from 'lucide-react';
+import Cookie from 'js-cookie';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+
+function LogoutButton() {
+  const router = useRouter();
+
+  const onLogout = async () => {
+    try {
+      // Fjern cookies
+      Cookie.remove('token');
+      Cookie.remove('role');
+
+      toast.success('Logged out successfully');
+      router.push('/login');
+    } catch (error) {
+      // Håndter feil
+    }
+  }
+
+  return (
+    <div>
+      <Button className='flex items-center gap-1' onClick={onLogout}>
+        <LogOut size={16} />
+        Logout
+      </Button>
+    </div>
+  )
+}
+
+export default LogoutButton
+```
+
+### Forklaring
+
+| Del | Beskrivelse |
+|-----|-------------|
+| `Cookie.remove()` | Fjerner token og rolle fra cookies |
+| `toast.success()` | Viser bekreftelsesmelding |
+| `router.push('/login')` | Redirecter til login-siden |
+| `<LogOut />` | Lucide-ikon for logout |
+
+### Bruk i Dashboard
+
+```tsx
+import LogoutButton from '@/components/functional/logout-btn';
+
+function Dashboard() {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <LogoutButton />
+    </div>
+  );
+}
+```
+
+---
+
+### LogoutButton (Alternativ med props)
+
+**Fil:** `src/components/functional/logout-button.tsx` (alternativ)
 
 ```tsx
 'use client'
@@ -607,9 +751,17 @@ import { JobCard, LogoutButton, UserAvatar } from '@/components/functional';
 - [ ] Label installert
 - [ ] Select installert
 - [ ] Form installert
+- [ ] Sheet installert (for sidebar)
+
+### Custom UI-komponenter
+- [ ] `spinner.tsx` opprettet
+- [ ] Spinner brukt i PrivateLayout
 
 ### Funksjonelle komponenter
-- [ ] LogoutButton opprettet
+- [ ] `logout-btn.tsx` opprettet
+- [ ] LogoutButton fjerner cookies ved logout
+- [ ] LogoutButton viser toast-melding
+- [ ] LogoutButton redirecter til login
 - [ ] Andre nødvendige komponenter
 
 ### TypeScript
@@ -621,6 +773,10 @@ import { JobCard, LogoutButton, UserAvatar } from '@/components/functional';
 - [ ] `'use client'` kun der nødvendig
 - [ ] Server components for data fetching
 - [ ] Client components for interaktivitet
+
+### Zustand-integrasjon
+- [ ] Komponenter kan hente brukerdata fra store
+- [ ] Dashboard bruker `useUsersStore()`
 
 ---
 
