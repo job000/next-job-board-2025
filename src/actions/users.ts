@@ -5,6 +5,7 @@ import { IUser } from '@/interfaces';
 import bcrypt from 'bcryptjs';
 import { success } from 'zod';
 import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
 
 
 export const registerUser = async (payload: Partial<IUser>) => {
@@ -55,15 +56,14 @@ export const loginUser = async (payload: Partial<IUser>) => {
         const userResponse = await supabaseConfig
             .from('user_profiles')
             .select('*')
-            .eq('email', payload.email)
-            .single();
+            .eq('email', payload.email?.toLowerCase());
 
         if(userResponse.error || userResponse.data.length === 0){
             throw new Error('User not found with this email.');
         }
 
         // Step 2: Compare passwords
-        const user=userResponse.data as IUser;
+        const user=userResponse.data[0] as IUser;
         const isPasswordValid = await bcrypt.compare(payload.password || '', user.password);
         if(!isPasswordValid){
             throw new Error('Invalid password.');
@@ -86,5 +86,40 @@ export const loginUser = async (payload: Partial<IUser>) => {
             success: false,
             message: error.message,
         };
+    }
+};
+
+export const getLoggedInUser = async () => {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('token')?.value;
+
+        if (!token) {
+            throw new Error('No authentication token found.');
+        }
+
+        // Verify JWT token
+        const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+        if (!decoded || !decoded.id) {
+            throw new Error('Invalid token.');
+        }
+
+
+        // Fetch user details from database
+        const userResponse = await supabaseConfig
+            .from('user_profiles')
+            .select('*')
+            .eq('email', decoded.email);
+
+        if (userResponse.error || !userResponse.data) {
+            throw new Error('User not found.');
+        }
+        const user = userResponse.data[0];
+        //delete password before returning
+        delete user.password;
+
+        return {success: true, message: 'User fetched successfully', data: user };
+    } catch (error: any) {
+        return {success: false, message: error.message};
     }
 };

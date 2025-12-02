@@ -64,7 +64,7 @@ function LoginPage() {
       if(response.success){
         toast.success(response.message);
         form.reset();
-        router.push('/');
+        router.push(`/${values.role}/dashboard`);
         const token = response.data;
         if(token){
           cookie.set('token', token);
