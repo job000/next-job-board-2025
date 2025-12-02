@@ -22,11 +22,17 @@ Implementere skjemaer med React Hook Form og Zod-validering.
 
 ### Hvorfor React Hook Form + Zod?
 
-| Funksjon | Beskrivelse |
-|----------|-------------|
-| **React Hook Form** | Effektiv skjemahåndtering med minimal re-rendering |
-| **Zod** | TypeScript-først skjemavalidering |
-| **@hookform/resolvers** | Kobler Zod til React Hook Form |
+| Teknologi | Hva det gjør | Fordel |
+|-----------|--------------|--------|
+| **React Hook Form** | Håndterer skjema-state | Minimal re-rendering, bedre ytelse |
+| **Zod** | Definerer valideringsregler | TypeScript-typer genereres automatisk |
+| **@hookform/resolvers** | Kobler dem sammen | Sømløs integrasjon |
+
+**Hvorfor ikke bare vanlig HTML-validering?**
+- Konsistent validering på client og server
+- Egendefinerte feilmeldinger
+- Kompleks validering (f.eks. "passord må matche")
+- TypeScript-typer fra schema
 
 ### Valideringsflyt
 
@@ -696,6 +702,41 @@ if (response.success) {
   setLoading(false);  // Husk dette!
 }
 ```
+
+---
+
+## Tips og triks
+
+### Zod tips
+```typescript
+// Gjenbruk typer fra schema
+type FormData = z.infer<typeof formSchema>;
+
+// Egendefinert validering
+z.string().refine((val) => val.includes('@'), {
+  message: "Må inneholde @",
+});
+
+// Passord-bekreftelse
+z.object({
+  password: z.string().min(6),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passordene må matche",
+  path: ["confirmPassword"],
+});
+```
+
+### React Hook Form tips
+- **`form.reset()`** - Nullstiller skjemaet
+- **`form.setValue("field", value)`** - Sett verdi programmatisk
+- **`form.watch("field")`** - Lytt til endringer i et felt
+- **`form.formState.errors`** - Alle feil i skjemaet
+
+### Debugging
+- **Console.log values** i `onSubmit` for å se hva som sendes
+- **Se feil:** `console.log(form.formState.errors)`
+- **Sjekk at `<Toaster />`** er i layout.tsx hvis toast ikke vises
 
 ---
 

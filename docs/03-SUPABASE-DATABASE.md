@@ -19,13 +19,21 @@ Denne guiden viser hvordan du setter opp Supabase som backend-database.
 
 ## Hva er Supabase?
 
-Supabase er en "Firebase-alternativ" med:
+**Supabase** er en hosted database-tjeneste som gir deg:
 
 - **PostgreSQL-database** - Kraftig, relasjonell database
-- **Autentisering** - Innebygd brukerhandtering
-- **Storage** - Fillagring
-- **Realtime** - Sanntidsoppdateringer
-- **Edge Functions** - Serverless-funksjoner
+- **Auto-generert API** - REST og GraphQL ut av boksen
+- **Dashboard** - Visuelt grensesnitt for å se og redigere data
+- **Row Level Security** - Sikkerhet på rad-nivå
+
+### Hvorfor Supabase?
+
+| Fordel | Beskrivelse |
+|--------|-------------|
+| Gratis å starte | 500 MB database, 50k mndl. brukere |
+| Ingen server å drifte | Alt hostes for deg |
+| SQL-tilgang | Full kontroll med SQL Editor i dashboard |
+| Enkelt API | JavaScript-klient med TypeScript-støtte |
 
 ### Gratis plan inkluderer
 
@@ -166,7 +174,12 @@ CREATE INDEX idx_jobs_created ON jobs(created_at DESC);
 
 ### Hva er RLS?
 
-Row Level Security beskytter dataene dine pa rad-niva. Uten RLS kan hvem som helst lese/skrive alle data.
+**Row Level Security (RLS)** er Supabase sin sikkerhetsfunksjon som bestemmer hvem som kan lese/skrive hvilke rader.
+
+**Uten RLS:** Alle med API-nøkkelen kan lese/skrive alt.
+**Med RLS:** Du definerer regler (policies) for hvem som har tilgang til hva.
+
+**Tips:** Aktiver alltid RLS i produksjon! For utvikling kan du starte med åpne policies.
 
 ### Aktiver RLS
 
@@ -540,7 +553,34 @@ Ga videre til [04-TYPESCRIPT-INTERFACES.md](./04-TYPESCRIPT-INTERFACES.md) for a
 
 ---
 
-## Feilsoking
+## Tips og triks
+
+### Supabase Dashboard
+- **Table Editor** - Se og rediger data visuelt
+- **SQL Editor** - Kjør SQL direkte
+- **Logs** - Se alle API-kall og feil
+- **API Docs** - Auto-generert dokumentasjon for dine tabeller
+
+### Database-tips
+- **Bruk UUID for ID** - Sikrere enn auto-increment
+- **Legg til indekser** på kolonner du søker på ofte (email, role)
+- **Timestamps** - Alltid ha `created_at` og `updated_at`
+
+### Supabase-klient tips
+```typescript
+// Hent én rad
+.single()  // Returnerer objekt, ikke array
+
+// Sortering
+.order('created_at', { ascending: false })  // Nyeste først
+
+// Begrens antall
+.limit(10)  // Kun 10 rader
+```
+
+---
+
+## Feilsøking
 
 ### "Invalid API key"
 
@@ -558,7 +598,7 @@ Ga videre til [04-TYPESCRIPT-INTERFACES.md](./04-TYPESCRIPT-INTERFACES.md) for a
 - Tabellen er ikke opprettet
 - Sjekk for skrivefeil i tabellnavn
 
-### Miljovariabler leses ikke
+### Miljøvariabler leses ikke
 
 ```bash
 # Restart dev-server

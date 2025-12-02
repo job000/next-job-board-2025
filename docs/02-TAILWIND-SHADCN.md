@@ -19,32 +19,37 @@ Denne guiden viser hvordan du setter opp styling med Tailwind CSS og Shadcn/ui-k
 
 ## Oversikt
 
-### Hva er Tailwind CSS?
+### Hvorfor Tailwind CSS?
 
-Tailwind er et "utility-first" CSS-rammeverk:
+**Tailwind** lar deg style direkte i HTML med utility-klasser. Fordeler:
+- Ingen egen CSS-fil å vedlikeholde
+- Konsistent design med ferdigdefinerte verdier (spacing, farger)
+- Enkel responsiv design med `md:`, `lg:` prefixer
 
 ```html
-<!-- Tradisjonell CSS -->
+<!-- Tradisjonell CSS - krever egen .css fil -->
 <button class="primary-button">Klikk meg</button>
 
-<!-- Tailwind CSS -->
+<!-- Tailwind CSS - alt i ett sted -->
 <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
   Klikk meg
 </button>
 ```
 
-### Hva er Shadcn/ui?
+### Hvorfor Shadcn/ui?
 
-Shadcn/ui er en samling av gjenbrukbare komponenter bygget med:
+**Shadcn/ui** gir deg profesjonelle UI-komponenter som:
+- **Du eier koden** - kopieres inn i prosjektet, ikke node_modules
+- **Fullt tilpassbar** - endre hva du vil
+- **Tilgjengelig (a11y)** - bygget på Radix UI som håndterer tastatur/skjermleser
+- **TypeScript-støtte** - full intellisense
+
+Bygget med:
 - Radix UI (tilgjengelighet)
 - Tailwind CSS (styling)
 - class-variance-authority (varianter)
 
-**Fordeler:**
-- Kopier koden inn i prosjektet (du eier den)
-- Fullt tilpassbar
-- Tilgjengelig (a11y)
-- TypeScript-stotte
+**Tips:** Start med Button, Input, Label, Select - de dekker de fleste behov.
 
 ---
 
@@ -501,7 +506,32 @@ Ga videre til [03-SUPABASE-DATABASE.md](./03-SUPABASE-DATABASE.md) for a sette o
 
 ---
 
-## Feilsoking
+## Tips og triks
+
+### Tailwind tips
+- **Hover-effekter:** Bruk `hover:` prefix, f.eks. `hover:bg-blue-600`
+- **Responsivt:** Bruk `md:` for tablet, `lg:` for desktop, f.eks. `md:flex-row`
+- **Dark mode:** Bruk `dark:` prefix når dark mode er aktivert
+- **Gruppering:** Bruk `group` og `group-hover:` for å style barn basert på forelder
+
+### Shadcn tips
+- **Ikke installer alle komponenter** - legg til etter behov
+- **Se kildekoden** i `src/components/ui/` for å forstå hvordan de fungerer
+- **Tilpass varianter** i komponentfilen for prosjektspesifikk styling
+
+### cn() funksjonen
+`cn()` er en hjelpefunksjon som kombinerer Tailwind-klasser intelligent:
+```tsx
+// Slår sammen klasser og løser konflikter
+cn("px-4", "px-6")  // → "px-6" (siste vinner)
+
+// Betingede klasser
+cn("base-class", isActive && "active-class")
+```
+
+---
+
+## Feilsøking
 
 ### "Cannot find module '@/lib/utils'"
 

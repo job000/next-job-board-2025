@@ -138,41 +138,64 @@ prosjekt/
 ## Teknologistakk
 
 ### Frontend
-| Teknologi | Versjon | Formal |
-|-----------|---------|--------|
-| Next.js | 16.0.5 | React-rammeverk |
-| React | 19.2.0 | UI-bibliotek |
-| TypeScript | 5.x | Type-sikkerhet |
-| Tailwind CSS | 4.x | Styling |
-| Shadcn/ui | - | UI-komponenter |
-| Lucide React | 0.555.0 | Ikoner |
+| Teknologi | Versjon | Beskrivelse |
+|-----------|---------|-------------|
+| Next.js | 16.0.5 | React-rammeverk med server-side rendering og App Router |
+| React | 19.2.0 | UI-bibliotek for å bygge brukergrensesnitt |
+| TypeScript | 5.x | JavaScript med typer - fanger feil før kjøretid |
+| Tailwind CSS | 4.x | Utility-first CSS - stiler skrives direkte i HTML |
+| Shadcn/ui | - | Ferdiglagde, tilgjengelige UI-komponenter du eier selv |
+| Lucide React | 0.555.0 | Moderne ikonbibliotek med 1000+ ikoner |
 
 ### Backend
-| Teknologi | Versjon | Formal |
-|-----------|---------|--------|
-| Supabase | 2.86.0 | Database (PostgreSQL) |
-| bcryptjs | 3.0.3 | Passord-hashing |
-| jsonwebtoken | 9.0.2 | JWT-tokens |
+| Teknologi | Versjon | Beskrivelse |
+|-----------|---------|-------------|
+| Supabase | 2.86.0 | Hosted PostgreSQL database med API og autentisering |
+| bcryptjs | 3.0.3 | Sikker passord-hashing (aldri lagre passord i klartekst!) |
+| jsonwebtoken | 9.0.2 | JWT-tokens for å verifisere innloggede brukere |
 
 ### Skjema/Validering
-| Teknologi | Versjon | Formal |
-|-----------|---------|--------|
-| React Hook Form | 7.67.0 | Skjemahandtering |
-| Zod | 4.1.13 | Validering |
-| @hookform/resolvers | 5.2.2 | Kobling |
+| Teknologi | Versjon | Beskrivelse |
+|-----------|---------|-------------|
+| React Hook Form | 7.67.0 | Effektiv skjemahåndtering uten unødvendige re-renders |
+| Zod | 4.1.13 | Schema-validering med TypeScript-integrasjon |
+| @hookform/resolvers | 5.2.2 | Kobler Zod-validering til React Hook Form |
 
 ### State Management
-| Teknologi | Versjon | Formal |
-|-----------|---------|--------|
-| Zustand | 5.x | Global state management |
+| Teknologi | Versjon | Beskrivelse |
+|-----------|---------|-------------|
+| Zustand | 5.x | Enkel global state - erstatter Redux med mye mindre kode |
 
 ### Andre
-| Teknologi | Versjon | Formal |
-|-----------|---------|--------|
-| react-hot-toast | 2.6.0 | Notifikasjoner |
-| js-cookie | 3.0.5 | Cookie-handtering |
-| clsx | 2.1.1 | CSS-klasser |
-| tailwind-merge | 3.4.0 | Tailwind-klasser |
+| Teknologi | Versjon | Beskrivelse |
+|-----------|---------|-------------|
+| react-hot-toast | 2.6.0 | Vakre toast-notifikasjoner |
+| js-cookie | 3.0.5 | Enkel cookie-håndtering i frontend |
+| clsx | 2.1.1 | Kombinerer CSS-klasser betinget |
+| tailwind-merge | 3.4.0 | Slår sammen Tailwind-klasser uten konflikter |
+
+---
+
+## Tips og triks
+
+### Generelle tips
+- **Start dev-server én gang** og la den kjøre - den oppdaterer automatisk
+- **Les feilmeldinger nøye** - de forteller ofte nøyaktig hva som er galt
+- **Bruk TypeScript-hints** - hold musepekeren over variabler for å se typer
+- **Sjekk nettverksfanen** i DevTools for API-feil
+
+### Vanlige feil og løsninger
+| Problem | Løsning |
+|---------|---------|
+| "Module not found" | Kjør `npm install` |
+| Miljøvariabler leses ikke | Restart dev-server (`npm run dev`) |
+| Styling vises ikke | Sjekk at `globals.css` importeres i `layout.tsx` |
+| "Hydration error" | Sjekk at server og client returnerer samme HTML |
+
+### Utviklingsverktøy
+- **React DevTools** - Inspiser komponenter i nettleseren
+- **Supabase Dashboard** - Se og rediger database direkte
+- **VS Code extensions**: ESLint, Tailwind CSS IntelliSense, Prettier
 
 ---
 

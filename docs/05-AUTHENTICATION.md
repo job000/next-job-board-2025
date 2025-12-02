@@ -52,12 +52,16 @@ Implementere brukerregistrering og innlogging med bcrypt og JWT.
 
 ### Teknologier
 
-| Teknologi | Formål |
-|-----------|--------|
-| bcryptjs | Passord-hashing |
-| jsonwebtoken | JWT-tokens |
-| js-cookie | Cookie-håndtering (frontend) |
-| next/headers | Cookie-håndtering (backend) |
+| Teknologi | Formål | Hvorfor? |
+|-----------|--------|----------|
+| bcryptjs | Passord-hashing | Gjør passord uleselige selv om databasen lekker |
+| jsonwebtoken | JWT-tokens | Stateless autentisering - serveren trenger ikke lagre sesjoner |
+| js-cookie | Cookie-håndtering (frontend) | Enkel API for å lese/skrive cookies i nettleseren |
+| next/headers | Cookie-håndtering (backend) | Sikker tilgang til cookies i Server Actions |
+
+**Viktig:**
+- **bcrypt** hasher passord med salt - selv like passord får ulik hash
+- **JWT** inneholder brukerinfo (id, rolle) signert med en hemmelighet - kan ikke forfalskes
 
 ---
 
@@ -551,6 +555,27 @@ export const getLoggedInUser = async () => {
     }
 };
 ```
+
+---
+
+## Tips og triks
+
+### Sikkerhetstips
+- **Salt rounds:** 10 er anbefalt (10-12 er bra balanse mellom sikkerhet og hastighet)
+- **Token-utløp:** 24 timer er vanlig, kortere for sensitive apper
+- **Alltid slett passord** fra bruker-objektet før retur til frontend
+
+### Debugging
+- **Se JWT innhold:** Lim inn token på [jwt.io](https://jwt.io) for å se payload
+- **Test i Supabase:** Bruk Table Editor for å se om brukere opprettes
+- **Console.log:** Logg `response` fra Server Actions for å se feil
+
+### Vanlige feil
+| Feil | Årsak | Løsning |
+|------|-------|---------|
+| "User not found" | Feil e-post eller bruker eksisterer ikke | Sjekk e-post i database |
+| "Invalid password" | Feil passord | Sjekk at passord ble hashet ved registrering |
+| "Invalid token" | Token utløpt eller ugyldig | Logg inn på nytt |
 
 ---
 
