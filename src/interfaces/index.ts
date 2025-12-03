@@ -10,3 +10,23 @@ export interface IUser {
     created_at: string | null;
     updated_at: string;
 }
+
+export interface IJob {
+  id: number;
+  recruiter_id: string;
+  title: string;
+  description: string;
+  location: string;
+  skills : string[];
+  job_type: string;
+  min_salary: number;
+  max_salary: number;
+  exp_required: string;
+  last_date_to_apply: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+
+  // runtime fields
+  recruiter: IUser;
+}

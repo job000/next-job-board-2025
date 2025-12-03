@@ -32,10 +32,9 @@ src/components/
 │   └── spinner.tsx         # Custom loading spinner
 │
 └── functional/             # Appspesifikke komponenter
-    ├── logout-btn.tsx
-    ├── user-avatar.tsx
-    ├── job-card.tsx
-    └── search-bar.tsx
+    ├── logout-btn.tsx      # Logout-knapp med cookie-fjerning
+    ├── page-title.tsx      # Gjenbrukbar sidetittel-komponent
+    └── job-form.tsx        # Skjema for å opprette/redigere jobber
 ```
 
 ### Forskjell på UI og Functional
@@ -43,7 +42,7 @@ src/components/
 | Type | Formål | Eksempler |
 |------|--------|-----------|
 | **UI** | Generiske, stiliserte elementer | Button, Input, Card, Spinner |
-| **Functional** | Appspesifikk logikk | LogoutButton, JobCard |
+| **Functional** | Appspesifikk logikk | LogoutButton, PageTitle, JobForm |
 
 ---
 
@@ -315,6 +314,140 @@ function LogoutButton({
 
 export default LogoutButton;
 ```
+
+---
+
+### PageTitle (Faktisk implementasjon)
+
+En enkel, gjenbrukbar komponent for sidetitler med konsistent styling.
+
+**Fil:** `src/components/functional/page-title.tsx`
+
+```tsx
+import React from 'react'
+
+function PageTitle({ title }: { title: string }) {
+  return (
+    <h1 className='text-xl font-bold text-primary'>
+      {title}
+    </h1>
+  )
+}
+
+export default PageTitle
+```
+
+### Forklaring av PageTitle
+
+| Del | Beskrivelse |
+|-----|-------------|
+| `{ title }: { title: string }` | Props med inline TypeScript-type |
+| `text-xl` | Tailwind: ekstra stor tekst |
+| `font-bold` | Tailwind: fet skrift |
+| `text-primary` | Tailwind: primærfargen fra tema |
+
+### Bruk av PageTitle
+
+```tsx
+import PageTitle from '@/components/functional/page-title';
+
+// I en side
+function AddJobPage() {
+  return (
+    <div className='flex flex-col gap-5'>
+      <PageTitle title="Add New Job" />
+      <JobForm />
+    </div>
+  );
+}
+
+// Med ulike titler
+<PageTitle title="Jobs" />
+<PageTitle title="Edit Job" />
+<PageTitle title="Recruiter Dashboard" />
+```
+
+---
+
+### JobForm (Faktisk implementasjon)
+
+Skjema-komponent for å opprette og redigere jobber. Gjenbrukes på både `/add` og `/edit` sider.
+
+**Fil:** `src/components/functional/job-form.tsx`
+
+```tsx
+import React from 'react'
+
+function JobForm() {
+  return (
+    <div>
+      Test
+    </div>
+  )
+}
+
+export default JobForm
+```
+
+### Hvorfor gjenbrukbar JobForm?
+
+```
+Uten gjenbrukbar komponent:          Med gjenbrukbar komponent:
+┌─────────────────────────┐          ┌─────────────────────────┐
+│ /jobs/add/page.tsx      │          │ /jobs/add/page.tsx      │
+│   <form>                │          │   <JobForm />           │
+│     <input title />     │          └─────────────────────────┘
+│     <input location />  │                    │
+│     ...100+ linjer...   │                    ▼
+│   </form>               │          ┌─────────────────────────┐
+└─────────────────────────┘          │ job-form.tsx            │
+                                     │   (felles logikk)       │
+┌─────────────────────────┐          └─────────────────────────┘
+│ /jobs/edit/page.tsx     │                    ▲
+│   <form>                │                    │
+│     <input title />     │          ┌─────────────────────────┐
+│     <input location />  │          │ /jobs/edit/[id]/page.tsx│
+│     ...100+ linjer...   │          │   <JobForm />           │
+│   </form>               │          └─────────────────────────┘
+└─────────────────────────┘
+      ❌ Duplisert kode                   ✅ DRY-prinsippet
+```
+
+### Bruk av JobForm
+
+```tsx
+// src/app/(private)/recruiter/jobs/add/page.tsx
+import JobForm from '@/components/functional/job-form'
+import PageTitle from '@/components/functional/page-title'
+
+function AddJobPage() {
+  return (
+    <div className='flex flex-col gap-5'>
+      <PageTitle title="Add New Job" />
+      <JobForm />
+    </div>
+  )
+}
+
+export default AddJobPage
+
+// src/app/(private)/recruiter/jobs/edit/[id]/page.tsx
+import JobForm from '@/components/functional/job-form'
+import PageTitle from '@/components/functional/page-title'
+
+function EditJobPage() {
+  return (
+    <div className='flex flex-col gap-5'>
+      <PageTitle title="Edit Job" />
+      <JobForm />
+    </div>
+  )
+}
+
+export default EditJobPage
+```
+
+---
 
 ### UserAvatar
 
@@ -762,7 +895,10 @@ import { JobCard, LogoutButton, UserAvatar } from '@/components/functional';
 - [ ] LogoutButton fjerner cookies ved logout
 - [ ] LogoutButton viser toast-melding
 - [ ] LogoutButton redirecter til login
-- [ ] Andre nødvendige komponenter
+- [ ] `page-title.tsx` opprettet
+- [ ] PageTitle bruker props med TypeScript-type
+- [ ] `job-form.tsx` opprettet
+- [ ] JobForm gjenbrukes på add og edit sider
 
 ### TypeScript
 - [ ] Props-interfaces definert

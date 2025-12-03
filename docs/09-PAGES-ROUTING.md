@@ -168,24 +168,19 @@ Private sider bruker Zustand global state for brukerdata. Se [12-STATE-MANAGEMEN
 ```
 src/app/(private)/
 ├── job-seeker/
-│   ├── dashboard/
-│   │   └── page.tsx
-│   ├── jobs/
-│   │   └── page.tsx
-│   ├── applications/
-│   │   └── page.tsx
-│   └── profile/
+│   └── dashboard/
 │       └── page.tsx
 │
 └── recruiter/
     ├── dashboard/
     │   └── page.tsx
     ├── jobs/
-    │   ├── page.tsx
-    │   ├── new/
-    │   │   └── page.tsx
-    │   └── [id]/
-    │       └── page.tsx
+    │   ├── page.tsx              → /recruiter/jobs (liste)
+    │   ├── add/
+    │   │   └── page.tsx          → /recruiter/jobs/add (ny jobb)
+    │   └── edit/
+    │       └── [id]/
+    │           └── page.tsx      → /recruiter/jobs/edit/123 (rediger)
     ├── applications/
     │   └── page.tsx
     └── profile/
@@ -227,6 +222,116 @@ function JobSeekerDashboard() {
 
 export default JobSeekerDashboard
 ```
+
+---
+
+### Recruiter Jobs-sider (CRUD-struktur)
+
+Recruiter har en komplett jobs-seksjon med liste, opprett og rediger:
+
+#### Jobs Liste
+
+**Fil:** `src/app/(private)/recruiter/jobs/page.tsx`
+
+```tsx
+import PageTitle from '@/components/functional/page-title'
+import { Button } from '@/components/ui/button'
+import { Plus } from 'lucide-react'
+import Link from 'next/link'
+import React from 'react'
+
+function RecruiterJobsPage() {
+  return (
+    <div>
+      <div className="flex justify-between items-center">
+        <PageTitle title="Jobs" />
+        <Button className='flex items-center gap-1'>
+          <Plus size={14} />
+          <Link href="/recruiter/jobs/add">Add New Job</Link>
+        </Button>
+      </div>
+      <div>
+        {/* Job listings would go here */}
+      </div>
+    </div>
+  )
+}
+
+export default RecruiterJobsPage
+```
+
+#### Forklaring av Jobs Liste
+
+| Del | Beskrivelse |
+|-----|-------------|
+| `PageTitle` | Gjenbrukbar komponent for sidetittel |
+| `flex justify-between` | Plasserer tittel og knapp på hver side |
+| `Plus` | Lucide-ikon for "legg til" |
+| `Link href="/recruiter/jobs/add"` | Navigasjon til opprett-siden |
+
+#### Add New Job
+
+**Fil:** `src/app/(private)/recruiter/jobs/add/page.tsx`
+
+```tsx
+import JobForm from '@/components/functional/job-form'
+import PageTitle from '@/components/functional/page-title'
+import React from 'react'
+
+function AddJobPage() {
+  return (
+    <div className='flex flex-col gap-5'>
+        <PageTitle title="Add New Job" />
+        <JobForm />
+    </div>
+  )
+}
+
+export default AddJobPage
+```
+
+#### Edit Job (Dynamisk rute)
+
+**Fil:** `src/app/(private)/recruiter/jobs/edit/[id]/page.tsx`
+
+```tsx
+import JobForm from '@/components/functional/job-form'
+import PageTitle from '@/components/functional/page-title'
+import React from 'react'
+
+function EditJobPage() {
+  return (
+    <div className='flex flex-col gap-5'>
+      <PageTitle title="Edit Job" />
+      <JobForm />
+    </div>
+  )
+}
+
+export default EditJobPage
+```
+
+#### Rute-oversikt for Jobs
+
+| URL | Fil | Formål |
+|-----|-----|--------|
+| `/recruiter/jobs` | `jobs/page.tsx` | Liste over alle jobber |
+| `/recruiter/jobs/add` | `jobs/add/page.tsx` | Opprett ny jobb |
+| `/recruiter/jobs/edit/123` | `jobs/edit/[id]/page.tsx` | Rediger jobb med ID 123 |
+
+#### Mappestruktur visualisert
+
+```
+recruiter/jobs/
+├── page.tsx              → /recruiter/jobs
+├── add/
+│   └── page.tsx          → /recruiter/jobs/add
+└── edit/
+    └── [id]/
+        └── page.tsx      → /recruiter/jobs/edit/:id
+```
+
+---
 
 ### Viktig: Server Components som default
 
@@ -565,7 +670,9 @@ export default async function JobPage({ params }: Props) {
 
 ### Mappestruktur - Recruiter sider
 - [ ] `src/app/(private)/recruiter/dashboard/page.tsx` opprettet
-- [ ] `src/app/(private)/recruiter/jobs/page.tsx` opprettet
+- [ ] `src/app/(private)/recruiter/jobs/page.tsx` opprettet (liste)
+- [ ] `src/app/(private)/recruiter/jobs/add/page.tsx` opprettet (ny jobb)
+- [ ] `src/app/(private)/recruiter/jobs/edit/[id]/page.tsx` opprettet (rediger)
 - [ ] `src/app/(private)/recruiter/applications/page.tsx` opprettet
 - [ ] `src/app/(private)/recruiter/profile/page.tsx` opprettet
 

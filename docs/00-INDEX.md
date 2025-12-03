@@ -13,6 +13,18 @@ Denne guiden er laget for å kunne **gjenbruke arkitekturen og koden** i nye pro
 
 ---
 
+## Grunnleggende konsepter (Les disse først!)
+
+Disse guidene forklarer de underliggende konseptene du trenger for å forstå og tilpasse koden.
+
+| # | Fil | Innhold |
+|---|-----|---------|
+| A0 | [JAVASCRIPT-TYPESCRIPT-BASICS.md](./A0-JAVASCRIPT-TYPESCRIPT-BASICS.md) | Funksjoner, export/import, Partial, async/await, rafc/rafce |
+| A1 | [NEXTJS-ROUTING-STRUCTURE.md](./A1-NEXTJS-ROUTING-STRUCTURE.md) | Mappestruktur, (mappenavn), [id], page.tsx, layouts |
+| A2 | [TAILWIND-HTML-STYLING.md](./A2-TAILWIND-HTML-STYLING.md) | HTML-elementer, CSS, Tailwind-klasser, flex, responsiv |
+
+---
+
 ## Implementasjonsoversikt
 
 | # | Fil | Innhold | Tid |
@@ -29,8 +41,9 @@ Denne guiden er laget for å kunne **gjenbruke arkitekturen og koden** i nye pro
 | 10 | [COMPONENTS.md](./10-COMPONENTS.md) | Gjenbrukbare komponenter | 15 min |
 | 11 | [DEPLOYMENT.md](./11-DEPLOYMENT.md) | Produksjonssetting | 15 min |
 | 12 | [STATE-MANAGEMENT.md](./12-STATE-MANAGEMENT.md) | Global state med Zustand | 20 min |
+| 13 | [SERVER-ACTIONS-JOBS.md](./13-SERVER-ACTIONS-JOBS.md) | CRUD-operasjoner for jobber | 20 min |
 
-**Total estimert tid:** ~3.5 timer
+**Total estimert tid:** ~4 timer
 
 ---
 
@@ -87,8 +100,9 @@ prosjekt/
 ├── public/                       # Statiske filer
 │
 ├── src/
-│   ├── actions/                  # Server Actions
-│   │   └── users.ts
+│   ├── actions/                  # Server Actions (backend-logikk)
+│   │   ├── users.ts              # Bruker-operasjoner
+│   │   └── jobs.ts               # Jobb-operasjoner (CRUD)
 │   │
 │   ├── app/                      # Next.js App Router
 │   │   ├── (public)/             # Offentlige sider
